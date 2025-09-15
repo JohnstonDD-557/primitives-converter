@@ -7,11 +7,12 @@
 
 import os
 from struct import pack
-from ctypes import c_uint32
+from ctypes import c_uint32,c_int32
 from xml.dom.minidom import getDOMImplementation
 import xml.etree.ElementTree as ET
 import bpy
 from mathutils import Vector
+from .visualfix_mk3 import visual_fix
 
 #####################################################################
 # packNormal
@@ -147,14 +148,15 @@ class BigWorldModelExporter(object):
                     elif 'xyznuviiiwwtb' in primitives_group['groups'][0]['format']:
                         vert = object.data.vertices[poly.vertices[loopIndex]]
                         x, y, z = vert.co
-                        y = -y
-                        n = object.data.loops[vertexIndex].normal.copy()
+                        y = y
+                        n = (object.data.loops[vertexIndex].normal.copy())
                         n = packNormal(n)
                         u, v = uv_layer[vertexIndex].uv
-                        t = object.data.loops[vertexIndex].tangent.copy()
+                        t = (object.data.loops[vertexIndex].tangent.copy())
                         t = packNormal(t)
-                        bn = object.data.loops[vertexIndex].bitangent.copy()
-                        bn = packNormal(bn)
+                        bn = (object.data.loops[vertexIndex].bitangent.copy())
+                        # print('test:',bn)
+                        bn =packNormal(bn)
                         XYZNUVTB = (x, z, y, n, u, 1-v)
                         TB = (t, bn)
                         if len(vert.groups) == 1:
@@ -257,7 +259,7 @@ class BigWorldModelExporter(object):
         return render_sets
 
 
-    def export(self, object_list: list, model_filepath: str, export_info: dict, debug_mode):
+    def export(self, object_list: list, model_filepath: str, export_info: dict, debug_mode,fix_mode,fix_extension):
         render_sets = self.get_vertices_and_indices(object_list, debug_mode) #Make array of triangles, vertices for each object
         
         vertices_format = b'xyznuvtb' #Default format
@@ -485,6 +487,8 @@ class BigWorldModelExporter(object):
         root = tree.getroot()
         root.tag= os.path.basename(visual_filepath)
         tree.write(visual_filepath)
+        if fix_mode:
+            visual_fix(visual_filepath,fix_extension)
 
         #####################################################################
         # .temp_model

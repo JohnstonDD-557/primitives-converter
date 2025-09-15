@@ -243,6 +243,18 @@ class Export_ModelFile(bpy.types.Operator, ExportHelper):
         default = False
     )
 
+    fix_mode : bpy.props.BoolProperty( #Checkbox
+        name = 'Fix Mode',
+        description = 'Will convert the old format visual file to the new one (Wargameing wows 14.1+)',
+        default = True
+     )
+    
+    fix_extension : bpy.props.BoolProperty( #Checkbox
+        name = 'Fix Extension',
+        description = 'Will add the. fix extension at the end of fixed visual file',
+        default = True
+     )
+
     @classmethod
     def poll(self, context): #Check if selected object is a parent and is empty, otherwise export option is greyed out
         sel_obj = context.selected_objects
@@ -291,16 +303,19 @@ class Export_ModelFile(bpy.types.Operator, ExportHelper):
                 
             try:
                 bw_exporter = BigWorldModelExporter()
-                bw_exporter.export(obj_models, self.filepath, export_info, self.debug_mode)
+                print('\n','='*48) #Divider
+                bw_exporter.export(obj_models, self.filepath, export_info, self.debug_mode,self.fix_mode,self.fix_extension)
             except:
                 self.report({'ERROR'}, 'Error in import %s!' % os.path.basename(self.filepath))
                 import traceback
                 traceback.print_exc()
                 return {'CANCELLED'}
-        print('='*48) #Divider
+        # print('='*48) #Divider
         print('[Export Info] Export %s' % os.path.basename(self.filepath)) #Filename info
         return {'FINISHED'}
  
     def draw(self, context): #Modify export window
         layout = self.layout
         layout.prop(self, 'debug_mode')
+        layout.prop(self, 'fix_mode')
+        layout.prop(self, 'fix_extension')
