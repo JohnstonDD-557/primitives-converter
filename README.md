@@ -1,5 +1,3 @@
-# UPDATE: This project will not be maintained anymore. This is because Wargaming is now using .geometry and will remove .primitive functionality. I have created a new repository for my .geometry converter project
-
 # BigWorld Model Converter(.primitives)
 This is a Blender addon designed to be able to import and export World of Warships' .primitives+.visual files, designed for mod authors.
 
