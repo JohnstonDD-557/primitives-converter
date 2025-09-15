@@ -251,7 +251,7 @@ class Export_ModelFile(bpy.types.Operator, ExportHelper):
     
     fix_extension : bpy.props.BoolProperty( #Checkbox
         name = 'Fix Extension',
-        description = 'Will add the. fix extension at the end of fixed visual file',
+        description = 'Will add a \'.fix\' extension at the end of fixed visual file',
         default = True
      )
 
