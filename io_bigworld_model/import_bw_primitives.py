@@ -8,9 +8,10 @@
 import os
 from .common.XmlUnpacker import XmlUnpacker
 from .loaddatamesh import LoadDataMesh
+from .rotation import matrix2xzy
 import bpy
 from bpy_extras.io_utils import unpack_list
-from mathutils import Vector
+from mathutils import Vector,Matrix
 
 #####################################################################
 # Get empty nodes
@@ -24,13 +25,26 @@ def get_Empty_by_nodes(elem, empty_obj = None):
     row1 = asVector(elem.find('transform').find('row1').text) #Scale z(only the second in the tuple)
     row2 = asVector(elem.find('transform').find('row2').text) #Scale y(only the third in the tuple)
     row3 = asVector(elem.find('transform').find('row3').text) #Location (only the first three in the tuple)
-    scale = Vector( (row0.x, row2.z, row1.y) ) #Form "tuple" of scale
+    # scale = Vector( (row0.x, row2.z, row1.y) ) #Form "tuple" of scale
     location = row3.xzy #Form "tuple" of location
+
+    #Form "transform" of martrix
+    mat = Matrix()
+    mat[0][0:4] = row0.x, row0.z, row0.y, 0.0
+    mat[1][0:4] = row2.x, row2.z, row2.y, 0.0
+    mat[2][0:4] = row1.x, row1.z, row1.y, 0.0
+    mat[3][0:4] = row3.x, row3.z, row3.y, 1.0
+    print(identifier,"\n")
+    rotation,scale = matrix2xzy(mat)
 
     ob = bpy.data.objects.new(identifier, None) #Create new empty object
 
     ob.scale = scale #Set scale
     ob.location = location #Set location
+
+    #Set rotrtion
+    ob.rotation_euler = rotation
+
     if empty_obj is not None: #If parent parameter exists
         ob.parent = empty_obj #Set parent
 

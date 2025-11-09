@@ -211,8 +211,9 @@ def get_nodes_by_empty(obj, export_info, is_root=True):
         node_name = os.path.splitext(obj.name)[0]
     #Add empty to recursive dictionary
     export_info[node_name] = {
-        'loc': obj.location.xzy.to_tuple(),
-        'scale': obj.scale.xzy.to_tuple(),
+        'loc': obj.location,
+        'scale': obj.scale,
+        'rotation': obj.rotation_euler,
         'children': {}
     }
     obj_models = [] #Children objects
