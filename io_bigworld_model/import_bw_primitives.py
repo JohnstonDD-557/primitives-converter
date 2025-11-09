@@ -34,7 +34,7 @@ def get_Empty_by_nodes(elem, empty_obj = None):
     mat[1][0:4] = row2.x, row2.z, row2.y, 0.0
     mat[2][0:4] = row1.x, row1.z, row1.y, 0.0
     mat[3][0:4] = row3.x, row3.z, row3.y, 1.0
-    print(identifier,"\n")
+    # print(identifier,"\n")
     rotation,scale = matrix2xzy(mat)
 
     ob = bpy.data.objects.new(identifier, None) #Create new empty object

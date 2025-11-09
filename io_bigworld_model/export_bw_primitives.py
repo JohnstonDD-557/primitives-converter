@@ -47,7 +47,7 @@ def set_nodes(nodes:dict, elem, doc):
         __row3 = doc.createElement('row3')
 
         # 计算旋转矩阵
-        print(node_name)
+        # print(node_name)
         mat_rot = xzy2matrix(node['loc'],node['rotation'],node['scale'])
 
         __row0.appendChild(doc.createTextNode('%f %f %f %f' % (mat_rot[0][0], mat_rot[2][0], mat_rot[1][0], 0.0)))
