@@ -7,6 +7,11 @@ import math
 from mathutils import Matrix,Euler
 
 #####################################################################
+
+'''
+用于处理visual文件中的旋转矩阵
+'''
+
 # xzy2matrix
 def xzy2matrix(loc,eul,scale):
     #eul = Euler((0.0, math.radians(45.0), 0.0), 'XYZ')
