@@ -1,5 +1,10 @@
 # 插件使用说明
 
+## 阅前提示
+
+这份说明仅为插件的基本使用说明,并不会详细介绍改模相关的操作步骤。\
+如果需要改模步骤相关说明,请移步[战舰世界MOD改模流程展示](https://www.bilibili.com/video/BV1mwcweVEs7/),[【战舰世界】建模教学](https://www.bilibili.com/video/BV1dN411a7QN/)等教程。
+
 ## 安装
 
 在releases中下载最新的插件压缩包,启动Blender(目前最高版本支持Blender 3.6)\
@@ -35,7 +40,7 @@
 
 对于网格物体本身,也有要求,首先需要选中网格物体,打开```材质```栏,会看到下图的信息(如果没有则需要为物体新建材质):\
 ![导出模型_材质](https://raw.githubusercontent.com/JohnstonDD-557/johnston_dd557.github.io/refs/heads/main/2/OutputModel_2.png)\
-这里需要修改材质的名称,任意英文名称均可。然后填写BigWorld Material中的```格式```和````mfm```项。\
+这里需要修改材质的名称,任意英文名称均可。然后填写BigWorld Material中的```格式```和```mfm```项。\
 ***格式***:\
 对于无权重模型,可以使用xyznuv(透明模型),xyznuvr(线缆),xyznuvtb(各种常规模型,不知道用什么格式的都可以直接使用该格式)\
 对于有权重模型,则需使用xyznuviiiwwtb,对于此种格式,模型与空物体之间的层级会稍有不同,其他地方的处理也稍麻烦些,但这里暂时不做介绍。\
