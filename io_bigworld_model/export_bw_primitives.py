@@ -50,10 +50,10 @@ def set_nodes(nodes:dict, elem, doc):
         # print(node_name)
         mat_rot = xzy2matrix(node['loc'],node['rotation'],node['scale'])
 
-        __row0.appendChild(doc.createTextNode('%f %f %f %f' % (mat_rot[0][0], mat_rot[2][0], mat_rot[1][0], 0.0)))
-        __row1.appendChild(doc.createTextNode('%f %f %f %f' % (mat_rot[0][2], mat_rot[2][2], mat_rot[1][2], 0.0)))
-        __row2.appendChild(doc.createTextNode('%f %f %f %f' % (mat_rot[0][1], mat_rot[2][1], mat_rot[1][1], 0.0)))
-        __row3.appendChild(doc.createTextNode('%f %f %f %f' % (node['loc'][0],node['loc'][2],node['loc'][1], 1.0)))
+        __row0.appendChild(doc.createTextNode('%f %f %f %f' % (round(mat_rot[0][0],6), round(mat_rot[2][0],6), round(mat_rot[1][0],6), 0.0)))
+        __row1.appendChild(doc.createTextNode('%f %f %f %f' % (round(mat_rot[0][2],6), round(mat_rot[2][2],6), round(mat_rot[1][2],6), 0.0)))
+        __row2.appendChild(doc.createTextNode('%f %f %f %f' % (round(mat_rot[0][1],6), round(mat_rot[2][1],6), round(mat_rot[1][1],6), 0.0)))
+        __row3.appendChild(doc.createTextNode('%f %f %f %f' % (round(node['loc'][0],6),round(node['loc'][2],6),round(node['loc'][1],6), 1.0)))
 
         __transform.appendChild(__row0)
         __transform.appendChild(__row1)
