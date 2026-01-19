@@ -43,8 +43,10 @@ class LoadDataMesh:
     __PackedGroups = None #Lists some redundant info
     __pfile = None #Primitive file
     __debug = False
-    def __init__(self, filepath, vertices_name, primitive_name, extra_info):
+    __load_bones = False
+    def __init__(self, filepath, vertices_name, primitive_name, extra_info,load_bones=False):
         self.__debug = extra_info #Debug mode?
+        self.__load_bones = load_bones
         self.__pfile = open(filepath, 'rb') #Open .primitives file
         self.indices_section_name = primitive_name #Indices group name
         self.vertices_section_name = vertices_name #Vertices group name
@@ -187,7 +189,10 @@ class LoadDataMesh:
             if is_skinned:
                 if byte_size == 37:
                     (x, z, y, n, u, v, index_1, index_2, index_3, weight_1, weight_2, t, bn) = unpack(unpack_format, self.__pfile.read(byte_size))
-                    y=-y #Skinned is flipped?
+                    if self.__load_bones:
+                        y=y
+                    else:
+                        y=-y #Skinned is flipped?
                     IIIWW = (index_1, index_2, index_3, weight_1, weight_2)
 
             else:

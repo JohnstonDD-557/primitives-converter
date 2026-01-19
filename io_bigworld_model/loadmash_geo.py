@@ -319,6 +319,7 @@ class LoadGeoData2Mesh:
             PiecesNum = 0
             ArmorPieces = []
             zuobiao = []
+            f = open("G:/Code/primitives-converter/Reference/armor_CM_PA_united.armor.txt", "a", encoding='utf-8')
             while PiecesNum < ArmorPiecesNum:
                 Id = unpack('<I', self.__pfile.read(4))[0]
                 UnknownB = self.__pfile.read(24)
@@ -343,6 +344,8 @@ class LoadGeoData2Mesh:
                         print('[GeoUnpcak]   Armor Piece[{}] Vertex[{}]: Co=({}, {}, {}), UnknownC={}'.format(
                             PiecesNum, VertexNum, vx, vy, vz, UnknownC
                         ))
+                    f.write('{}, {}, {},{}\n'.format(
+                            vx, vy, vz, UnknownC))
                     VertexNum += 1
                 ArmorPieces.append({
                     'id' : Id,

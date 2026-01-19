@@ -88,7 +88,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     filename_ext = '.primitives' 
     filter_glob : bpy.props.StringProperty( #Filter file extension
-        default = '*.primitives',
+        default = '*.*',
         options = {'HIDDEN'}
     )
 
@@ -98,9 +98,27 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         default = True
     )
 
+    import_models : bpy.props.BoolProperty( #Checkbox
+        name = 'Import Models',
+        description = 'Import model data',
+        default = True
+    )
+
     debug_mode : bpy.props.BoolProperty( #Checkbox
         name = 'Debug Mode',
         description = 'Will display extra info in the System Console',
+        default = False
+    )
+
+    load_bones : bpy.props.BoolProperty( #Checkbox
+        name = 'Load Bones',
+        description = 'Load bone systems',
+        default = False
+    )
+
+    new_visual_mode : bpy.props.BoolProperty( #Checkbox
+        name = 'New Visual Mode',
+        description = 'Use new visual format (Wargameing wows 14.1+)',
         default = False
     )
 
@@ -178,7 +196,8 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
             bw_model.load_from_file(self.filepath, self.import_empty, self.debug_mode,
                                     (self.disp_x, self.disp_y, self.disp_z),
                                     (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from x radians to y radius
-                                    (self.scale_x, self.scale_y, self.scale_z)) #Convert the file
+                                    (self.scale_x, self.scale_y, self.scale_z), 
+                                    self.load_bones, self.new_visual_mode, self.import_models) #Convert the file
         except:
             self.report({'ERROR'}, 'Error in import %s!' % os.path.basename(self.filepath))
             import traceback
@@ -189,7 +208,10 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     def draw(self, context): #Edit the file import window
         layout = self.layout
         layout.prop(self, 'import_empty')
+        layout.prop(self, 'import_models')
         layout.prop(self, 'debug_mode')
+        layout.prop(self, 'load_bones')
+        layout.prop(self, 'new_visual_mode')
         layout.prop(self, 'disp_x')
         layout.prop(self, 'disp_y')
         layout.prop(self, 'disp_z')
