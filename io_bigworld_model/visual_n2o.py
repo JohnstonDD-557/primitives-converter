@@ -54,10 +54,11 @@ def listFiles(dirPath):
 
 
 def Visual_new2old(file_path):
+    # print('scaning')
     p1 = r"(PnFMods/[^/]*/[^/]*/)"          # PnFMods/***/***/
     p2 = r"(./[^\\]*\\)"                    # ./***\
     p3 = r"(PnFMods/[^/]*/[^/]*/[^/]*/)"    # PnFMods/***/***/***/
-    
+    # fileList = listFiles(fileDir)
     if file_path:
         fileObj_v = file_path  # 不影响原变量
         i = 0  # render节点数目记录 用于后续lod节点写入
@@ -141,6 +142,7 @@ def Visual_new2old(file_path):
             max_v = root_v.find('boundingBox').find('max')
             n_boundingBox_v.append(min_v)
             n_boundingBox_v.append(max_v)
+
 
             # 生成新的visual文件
             visual_str = prettify(o_root_v)

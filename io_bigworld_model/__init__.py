@@ -88,7 +88,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     filename_ext = '.primitives' 
     filter_glob : bpy.props.StringProperty( #Filter file extension
-        default = '*.*',
+        default = '*.primitives;*.visual',
         options = {'HIDDEN'}
     )
 
