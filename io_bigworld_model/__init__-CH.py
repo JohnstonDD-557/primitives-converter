@@ -7,7 +7,7 @@
 bl_info = {
     'name': 'BigWorld Model (.primitives)',
     'author': 'SkepticalFox+ShadowyBandit',
-    'version': (1, 0, 1),
+    'version': (1, 0, 3),
     'blender': (2, 80, 0),
     'location': 'File > Import-Export',
     'description': 'World of Warships BigWorld Model Import/Export plugin',
@@ -88,7 +88,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     filename_ext = '.primitives' 
     filter_glob : bpy.props.StringProperty( #Filter file extension
-        default = '*.primitives',
+        default = '*.primitives;*.visual',
         options = {'HIDDEN'}
     )
 
@@ -98,9 +98,27 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         default = True
     )
 
+    import_models : bpy.props.BoolProperty( #Checkbox
+        name = '导入模型',
+        description = '导入模型数据',
+        default = True
+    )
+
     debug_mode : bpy.props.BoolProperty( #Checkbox
         name = 'Debug模式',
         description = '会在控制台中显示更多内容',
+        default = False
+    )
+
+    load_bones : bpy.props.BoolProperty( #Checkbox
+        name = '加载骨骼',
+        description = '加载骨骼系统',
+        default = False
+    )
+
+    new_visual_mode : bpy.props.BoolProperty( #Checkbox
+        name = '新版本Visual格式',
+        description = '使用新的Visual格式 (Wargameing wows 14.1+)',
         default = False
     )
 
@@ -178,7 +196,8 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
             bw_model.load_from_file(self.filepath, self.import_empty, self.debug_mode,
                                     (self.disp_x, self.disp_y, self.disp_z),
                                     (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from x radians to y radius
-                                    (self.scale_x, self.scale_y, self.scale_z)) #Convert the file
+                                    (self.scale_x, self.scale_y, self.scale_z), 
+                                    self.load_bones, self.new_visual_mode, self.import_models) #Convert the file
         except:
             self.report({'ERROR'}, 'Error in import %s!' % os.path.basename(self.filepath))
             import traceback
@@ -189,7 +208,10 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     def draw(self, context): #Edit the file import window
         layout = self.layout
         layout.prop(self, 'import_empty')
+        layout.prop(self, 'import_models')
         layout.prop(self, 'debug_mode')
+        layout.prop(self, 'load_bones')
+        layout.prop(self, 'new_visual_mode')
         layout.prop(self, 'disp_x')
         layout.prop(self, 'disp_y')
         layout.prop(self, 'disp_z')
@@ -246,7 +268,7 @@ class Export_ModelFile(bpy.types.Operator, ExportHelper):
 
     fix_mode : bpy.props.BoolProperty( #Checkbox
         name = '集成修复脚本',
-        description = '将visual文件格式自动转换WG服新版本格式 (Wargaming wows 14.1+)',
+        description = '将visual文件格式自动转换WG服新版本格式 (Wargameing wows 14.1+)',
         default = True
      )
     
