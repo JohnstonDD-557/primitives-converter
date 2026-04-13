@@ -84,17 +84,22 @@ class BigWorldModelLoader:
             visual_filepath = os.path.join(model_dir, visual_filename) #Full path of the visual file
             primitives_filepath = os.path.join(model_dir, primitives_filename) #Full path of the primitives file
 
-        if visual_filepath and primitives_filepath: #If visual exists
+        if visual_filepath and (primitives_filepath or (import_empty and not import_models)): #If visual exists
             if NewVisual_mode :
                 NewVisual = Visual_new2old(visual_filepath) #Convert new visual to old visual format string
                 visual = ET.fromstring(NewVisual) #Parse as XML
-                print(visual)
+                # print(visual)
             else:
                 with open(visual_filepath, 'rb') as f: #Open visual file
                     visual = XmlUnpacker().read(f) #Parse as XML
-                    print(visual)
+                    # print(visual)
 
-            if visual.find('renderSet') is not None: #Check if renderSet node(s) exist in the visual file
+            if (visual.find('renderSet') is not None) or (import_empty and not import_models): #Check if renderSet node(s) exist in the visual file
+                
+                if import_empty: #Organizes the objects and empties
+                    if self.root_empty_ob is None:
+                        self.root_empty_ob = get_Empty_by_nodes(visual.findall('node')[0]) #Set the scene root
+                
                 for renderSet in visual.findall('renderSet'): #For each renderSet
 
                     empties = [] # 权重与骨骼名称列表
@@ -185,10 +190,11 @@ class BigWorldModelLoader:
                     if import_empty: #Organizes the objects and empties
                         if self.root_empty_ob is None:
                             self.root_empty_ob = get_Empty_by_nodes(visual.findall('node')[0]) #Set the scene root
-                        if self.root_empty_ob is not None:
-                            ob.parent = self.root_empty_ob #Set the parent of the object as the scene root
-                    
-                    bpy.context.scene.collection.objects.link(ob) #Adds to the scene collection 
+                        if self.root_empty_ob is not None and ob is not None:
+                            if import_models:
+                                ob.parent = self.root_empty_ob #Set the parent of the object as the scene root
+                    if import_models:
+                        bpy.context.scene.collection.objects.link(ob) #Adds to the scene collection 
                     
                     # 添加骨骼系统
                     if load_bones:
