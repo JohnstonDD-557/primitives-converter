@@ -3,11 +3,11 @@
 ## 阅前提示
 
 这份说明仅为插件的基本使用说明,并不会详细介绍改模相关的操作步骤。\
-如果需要改模步骤相关说明,请移步[战舰世界MOD改模流程展示](https://www.bilibili.com/video/BV1mwcweVEs7/),[【战舰世界】建模教学](https://www.bilibili.com/video/BV1dN411a7QN/)等教程。
+如果需要改模步骤相关的详细说明,请移步[战舰世界MOD改模流程展示](https://www.bilibili.com/video/BV1mwcweVEs7/),[【战舰世界】建模教学](https://www.bilibili.com/video/BV1dN411a7QN/)等教程。
 
 ## 安装
 
-在releases中下载最新的插件压缩包,启动Blender(目前最高版本支持Blender 3.6)\
+在releases中下载最新的插件压缩包,启动Blender(目前最高版本支持到Blender 3.6)\
 按图中所示(编辑-->偏好设置-->插件-->安装)打开插件安装界面:\
 ![打开安装界面](https://raw.githubusercontent.com/JohnstonDD-557/johnston_dd557.github.io/refs/heads/main/2/Install_addon_1.png)\
 打开安装界面后找到下载下来的插件压缩包,进行安装:\
