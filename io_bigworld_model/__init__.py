@@ -37,10 +37,10 @@ def register():
         name='Format',
         description='Save vertex type for export',
         items=[
-            ('xyznuvtb', 'xyznuvtb', 'Description for abc'),
-            ('xyznuvr', 'xyznuvr', 'Description for def'),
-            ('xyznuviiiwwtb', 'xyznuviiiwwtb', 'Description for 123'),
-            ('xyznuv', 'xyznuv', 'Description for 123'),
+            ('xyznuvtb', 'xyznuvtb', '常规模型(各种普通的船体模型)'),
+            ('xyznuvr', 'xyznuvr', '线缆模型'),
+            ('xyznuviiiwwtb', 'xyznuviiiwwtb', '带权重的模型(如主炮)'),
+            ('xyznuv', 'xyznuv', '透明模型'),
         ],
         default='xyznuvtb'  # 必须设为 items 中的一个 identifier
     )
