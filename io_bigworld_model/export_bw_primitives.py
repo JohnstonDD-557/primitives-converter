@@ -123,7 +123,8 @@ class BigWorldModelExporter(object):
             uv_layer = object.data.uv_layers.active.data[:] #active uv map, should only be one
 
             #Recalculate normals vectors
-            object.data.calc_normals()
+            if bpy.app.version <= (3,60,0):
+                object.data.calc_normals()           # Blender 3.6 之后,该用法移除  
             object.data.calc_tangents(uvmap='uv1')
 
             primitives_group['groups'][0]['startVertex'] = iv

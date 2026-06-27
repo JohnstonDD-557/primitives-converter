@@ -16,6 +16,8 @@ import bpy
 from bpy_extras.io_utils import unpack_list
 from mathutils import Vector,Matrix
 
+# 一些通用量
+supportFormats = {'xyznuvtb','xyznuvr','xyznuviiiwwtb','xyznuv'}    # 目前插件支持的格式
 
 #####################################################################
 # Get empty nodes
@@ -145,7 +147,11 @@ class BigWorldModelLoader:
                                 
                         _identifier = renderSet.findall('geometry/primitiveGroup')[0].find('material/identifier').text.strip() #Material identifier
                         material = bpy.data.materials.new(_identifier) #Create a new material
-                        material.Vertex_Format = dataMesh.vertices_type.strip() #Save the vertex format for export
+                        Vertex_Format = dataMesh.vertices_type.strip()
+                        if Vertex_Format in supportFormats:
+                            material.Vertex_Format = Vertex_Format #Save the vertex format for export
+                        else:
+                            material.Vertex_Format = 'xyznuvtb'
                         if renderSet.findall('geometry/primitiveGroup')[0].find('material/mfm')!=None: #If mfm path exists
                             material.BigWorld_mfm_Path = renderSet.findall('geometry/primitiveGroup')[0].find('material/mfm').text.strip() #Save the mfm format for export
                         else:

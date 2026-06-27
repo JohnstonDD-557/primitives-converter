@@ -8,11 +8,10 @@ bl_info = {
     'name': 'BigWorld Model (.primitives)',
     'author': 'SkepticalFox+ShadowyBandit',
     'version': (1, 0, 3),
-    'blender': (2, 80, 0),
+    'blender': (5, 0, 0),
     'location': 'File > Import-Export',
     'description': 'World of Warships BigWorld Model Import/Export plugin',
     'warning': 'In progress',
-    'wiki_url': 'http://www.koreanrandom.com/forum/topic/28240-/',
     'category': 'Import-Export',
 }
 
@@ -34,10 +33,16 @@ def register():
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export) #Exportbar add option
     bpy.utils.register_class(Import_From_ModelFile) #Register import addon
     bpy.utils.register_class(Export_ModelFile) #Register export addon
-    bpy.types.Material.Vertex_Format = bpy.props.StringProperty( #Save vertex type for export
-        name = 'Format',
-        default = '',
-        description = 'Save vertex type for export'
+    bpy.types.Material.Vertex_Format = bpy.props.EnumProperty(      #Save vertex type for export
+        name='Format',
+        description='Save vertex type for export',
+        items=[
+            ('xyznuvtb', 'xyznuvtb', 'Description for abc'),
+            ('xyznuvr', 'xyznuvr', 'Description for def'),
+            ('xyznuviiiwwtb', 'xyznuviiiwwtb', 'Description for 123'),
+            ('xyznuv', 'xyznuv', 'Description for 123'),
+        ],
+        default='xyznuvtb'  # 必须设为 items 中的一个 identifier
     )
     bpy.types.Material.BigWorld_mfm_Path = bpy.props.StringProperty( #saves mfm path data, which contains extra rendering info
         name = 'mfm',
