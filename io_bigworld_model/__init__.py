@@ -96,7 +96,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     bl_label = _('IDS_IMPORT_LABEL') #Label
     bl_description = _('IDS_IMPORT_DESC') #Discription
 
-    # filename_ext = '.primitives' 
+    filename_ext = '*.primitives;*.visual'
     filter_glob : bpy.props.StringProperty( 
         default = '*.primitives;*.visual',
         options = {'HIDDEN'}
@@ -264,7 +264,7 @@ class Export_ModelFile(bpy.types.Operator, ExportHelper):
     bl_label = _('IDS_EXPORT_LABEL')
     bl_description = _('IDS_EXPORT_NAME')
 
-    # filename_ext = '.temp_model'
+    filename_ext = '.temp_model'
     filter_glob : bpy.props.StringProperty( #Filter
         default = '*.temp_model',
         options = {'HIDDEN'}
