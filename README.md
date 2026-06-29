@@ -18,4 +18,3 @@ This is a Blender addon designed to be able to import and export World of Warshi
 2. 增加直接读取/导出geo文件的功能(0%)
 3. 解决主炮装甲模型缺失的问题(20%)
 4. ~~从Readme到教程都来份英文版(有生之年)~~
-5. 重新整理一下需要显示的字符,方便后续翻译(0%)

@@ -25,7 +25,12 @@ from bpy_extras.io_utils import ImportHelper, ExportHelper
 from .import_bw_primitives import BigWorldModelLoader
 import math
 
-if __name__ == '__main__':
+# i18n
+from . import i18n
+LANG = bpy.context.preferences.view.language 
+_ = lambda key: i18n.get_translation(LANG, key)
+
+if __name__ == '__main__':  
     register()
         
 def register():
@@ -34,20 +39,20 @@ def register():
     bpy.utils.register_class(Import_From_ModelFile) #Register import addon
     bpy.utils.register_class(Export_ModelFile) #Register export addon
     bpy.types.Material.Vertex_Format = bpy.props.EnumProperty(      #Save vertex type for export
-        name='Format',
-        description='Save vertex type for export',
+        name=_('IDS_FORMAT'),
+        description=_('IDS_FORMAT_DESC'),
         items=[
-            ('xyznuvtb', 'xyznuvtb', '常规模型(各种普通的船体模型)'),
-            ('xyznuvr', 'xyznuvr', '线缆模型'),
-            ('xyznuviiiwwtb', 'xyznuviiiwwtb', '带权重的模型(如主炮)'),
-            ('xyznuv', 'xyznuv', '透明模型'),
+            ('xyznuvtb', 'xyznuvtb', _('IDS_FORMAT_UVTB')),
+            ('xyznuvr', 'xyznuvr', _('IDS_FORMAT_UVR')),
+            ('xyznuviiiwwtb', 'xyznuviiiwwtb', _('IDS_FORMAT_UVIIIWWTB')),
+            ('xyznuv', 'xyznuv', _('IDS_FORMAT_UV')),
         ],
         default='xyznuvtb'  # 必须设为 items 中的一个 identifier
     )
     bpy.types.Material.BigWorld_mfm_Path = bpy.props.StringProperty( #saves mfm path data, which contains extra rendering info
-        name = 'mfm',
+        name = _('IDS_MFM'),
         default = '',
-        description = '.mfm file path'
+        description = _('IDS_MFM_DESC')
     )
     bpy.utils.register_class(BigWorld_Material_Panel) #Register material subpanel addon
 
@@ -62,10 +67,10 @@ def unregister():
 # Menu operators
 
 def menu_func_import(self, context):
-    self.layout.operator('import.model', text = 'World of Warships BigWorld Model (.primitives+.visual)')
+    self.layout.operator('import.model', text = _('IDS_MENU_IMPORT'))
 
 def menu_func_export(self, context):
-    self.layout.operator('export.model', text='World of Warships BigWorld Model (.primitives+.visual+.temp_model)')
+    self.layout.operator('export.model', text= _('IDS_MENU_EXPORT'))
 
 #####################################################################
 # BigWorld Material Panel
@@ -88,66 +93,66 @@ class BigWorld_Material_Panel(bpy.types.Panel):
 
 class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     bl_idname = 'import.model' #Id
-    bl_label = 'Import File' #Label
-    bl_description = 'Import Ship Model' #Discription
+    bl_label = _('IDS_IMPORT_LABEL') #Label
+    bl_description = _('IDS_IMPORT_DESC') #Discription
 
-    filename_ext = '.primitives' 
-    filter_glob : bpy.props.StringProperty( #Filter file extension
+    # filename_ext = '.primitives' 
+    filter_glob : bpy.props.StringProperty( 
         default = '*.primitives;*.visual',
         options = {'HIDDEN'}
     )
 
     import_empty : bpy.props.BoolProperty( #Checkbox
-        name = 'Import Empty',
-        description = 'Import empty axes, required for modding',
+        name = _('IDS_IMPORT_EMPTY_NAME'),
+        description = _('IDS_IMPORT_EMPTY_DESC'),
         default = True
     )
 
     import_models : bpy.props.BoolProperty( #Checkbox
-        name = 'Import Models',
-        description = 'Import model data',
+        name = _('IDS_IMPORT_MODELS_NAME'),
+        description = _('IDS_IMPORT_MODELS_DESC'),
         default = True
     )
 
     debug_mode : bpy.props.BoolProperty( #Checkbox
-        name = 'Debug Mode',
-        description = 'Will display extra info in the System Console',
+        name = _('IDS_IMPORT_DEBUG_NAME'),
+        description = _('IDS_IMPORT_DEBUG_DESC'),
         default = False
     )
 
     load_bones : bpy.props.BoolProperty( #Checkbox
-        name = 'Load Bones',
-        description = 'Load bone systems',
+        name = _('IDS_IMPORT_BONE_NAME'),
+        description = _('IDS_IMPORT_BONE_DESC'),
         default = False
     )
 
     new_visual_mode : bpy.props.BoolProperty( #Checkbox
-        name = 'New Visual Mode',
-        description = 'Use new visual format (Wargameing wows 14.1+)',
+        name = _('IDS_IMPORT_NEWVISUAL_NAME'),
+        description = _('IDS_IMPORT_NEWVISUAL_DESC'),
         default = False
     )
 
     disp_x : bpy.props.FloatProperty( #Float box
         name = 'Position x',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0
     )
 
     disp_y : bpy.props.FloatProperty( #Float box
         name = 'Position y',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0
     )
 
     disp_z : bpy.props.FloatProperty( #Float box
         name = 'Position z',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0
     )
 
     rot_x : bpy.props.FloatProperty( #Float box
         name = 'Rotation x',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0,
         min = -180,
         max = 180
@@ -155,7 +160,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     rot_y : bpy.props.FloatProperty( #Float box
         name = 'Rotation y',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0,
         min = -180,
         max = 180
@@ -163,7 +168,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     rot_z : bpy.props.FloatProperty( #Float box
         name = 'Rotation z',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0,
         min = -180,
         max = 180
@@ -171,25 +176,25 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
 
     disp_z : bpy.props.FloatProperty( #Float box
         name = 'Position z',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 0.0
     )
 
     scale_x : bpy.props.FloatProperty( #Float box
         name = 'Scale x',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 1.0
     )
 
     scale_y : bpy.props.FloatProperty( #Float box
         name = 'Scale y',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 1.0
     )
 
     scale_z : bpy.props.FloatProperty( #Float box
         name = 'Scale z',
-        description = 'Do not change when modding, edit .visual instead',
+        description = _('IDS_IMPORT_TEST_PROP'),
         default = 1.0
     )
 
@@ -256,30 +261,30 @@ def get_nodes_by_empty(obj, export_info, is_root=True):
 
 class Export_ModelFile(bpy.types.Operator, ExportHelper):
     bl_idname = 'export.model'
-    bl_label = 'Export Model'
-    bl_description = 'Export BigWorld Model'
+    bl_label = _('IDS_EXPORT_LABEL')
+    bl_description = _('IDS_EXPORT_NAME')
 
-    filename_ext = '.temp_model'
+    # filename_ext = '.temp_model'
     filter_glob : bpy.props.StringProperty( #Filter
         default = '*.temp_model',
         options = {'HIDDEN'}
     )
 
     debug_mode : bpy.props.BoolProperty( #Checkbox
-        name = 'Debug Mode',
-        description = 'Will display extra info in the System Console',
+        name = _('IDS_EXPORT_DEBUG_NAME'),
+        description = _('IDS_EXPORT_DEBUG_DESC'),
         default = False
     )
 
     fix_mode : bpy.props.BoolProperty( #Checkbox
-        name = 'Fix Mode',
-        description = 'Will convert the old format visual file to the new one (Wargameing wows 14.1+)',
+        name = _('IDS_EXPORT_FIX_NAME'),
+        description = _('IDS_EXPORT_FIX_DESC'),
         default = True
      )
     
     fix_extension : bpy.props.BoolProperty( #Checkbox
-        name = 'Fix Extension',
-        description = 'Will add a \'.fix\' extension at the end of fixed visual file',
+        name = _('IDS_EXPORT_FIXEXT_NAME'),
+        description = _('IDS_EXPORT_FIXEXT_DESC'),
         default = True
      )
 
