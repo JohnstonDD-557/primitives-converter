@@ -166,7 +166,7 @@ class BigWorldModelExporter(object):
                         XYZNUVTB = (x, z, y, n, u, 1-v)
                         TB = (t, bn)
                         if len(vert.groups) == 1:
-                            index1 = vert.groups[0].group*3
+                            index1 = (vert.groups[0].group*3) & 0xFF
                             index2 = 0
                             index3 = 0
 
@@ -183,8 +183,8 @@ class BigWorldModelExporter(object):
                             weight2 = int(weight2*255)
 
                         elif len(vert.groups) == 2:
-                            index1 = vert.groups[0].group*3
-                            index2 = vert.groups[1].group*3
+                            index1 = (vert.groups[0].group*3) & 0xFF
+                            index2 = (vert.groups[1].group*3) & 0xFF
                             index3 = 0
 
                             weight1 = vert.groups[0].weight
@@ -200,9 +200,9 @@ class BigWorldModelExporter(object):
                             weight2 = int(weight2*255)
 
                         elif len(vert.groups) == 3:
-                            index1 = vert.groups[0].group*3
-                            index2 = vert.groups[1].group*3
-                            index3 = vert.groups[2].group*3
+                            index1 = (vert.groups[0].group * 3) & 0xFF
+                            index2 = (vert.groups[1].group * 3) & 0xFF
+                            index3 = (vert.groups[2].group * 3) & 0xFF
 
                             weight1 = vert.groups[0].weight
                             weight2 = vert.groups[1].weight
