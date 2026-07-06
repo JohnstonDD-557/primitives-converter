@@ -196,8 +196,8 @@ class BigWorldModelLoader:
                     if import_empty: #Organizes the objects and empties
                         if self.root_empty_ob is None:
                             self.root_empty_ob = get_Empty_by_nodes(visual.findall('node')[0]) #Set the scene root
-                        if self.root_empty_ob is not None and ob is not None:
-                            if import_models:
+                        else:
+                            if import_models and ob is not None:
                                 ob.parent = self.root_empty_ob #Set the parent of the object as the scene root
                     if import_models:
                         bpy.context.scene.collection.objects.link(ob) #Adds to the scene collection 
