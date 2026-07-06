@@ -177,9 +177,10 @@ class BigWorldModelLoader:
                                     bone_idx_vals = iiiww[0:3]
                                     bone_wght_vals = iiiww[3:5]
 
-                                    index1 = bone_idx_vals[0]//3
-                                    index2 = bone_idx_vals[1]//3
-                                    index3 = bone_idx_vals[2]//3
+                                    # 3 * 171 = 513 ≡ 1 (mod 256) (模逆元)
+                                    index1 = (bone_idx_vals[0] * 171) & 0xFF
+                                    index2 = (bone_idx_vals[1] * 171) & 0xFF
+                                    index3 = (bone_idx_vals[2] * 171) & 0xFF
                                     
                                     weight1 = bone_wght_vals[0]/255.0
                                     weight2 = bone_wght_vals[1]/255.0
