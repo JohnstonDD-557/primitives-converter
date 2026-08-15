@@ -8,7 +8,7 @@
 import os
 from .common.XmlUnpacker import XmlUnpacker
 import xml.etree.ElementTree as ET
-from .loaddatamesh import LoadDataMesh
+from .loaddatamesh import LoadDataMesh, decode_bone_index
 from .rotation import matrix2xzy
 from .Bone_Generate import auto_convert_empties_to_bones
 from .visual_n2o import Visual_new2old
@@ -177,18 +177,26 @@ class BigWorldModelLoader:
                                     bone_idx_vals = iiiww[0:3]
                                     bone_wght_vals = iiiww[3:5]
 
-                                    # 3 * 171 = 513 ≡ 1 (mod 256) (模逆元)
-                                    index1 = (bone_idx_vals[0] * 171) & 0xFF
-                                    index2 = (bone_idx_vals[1] * 171) & 0xFF
-                                    index3 = (bone_idx_vals[2] * 171) & 0xFF
-                                    
+
+                                    # Decode the game's node-index permutation
+                                    # (byte = 3*(n%86)+n//86, see primitive文件分析.md).
+                                    index1 = decode_bone_index(bone_idx_vals[0])
+                                    index2 = decode_bone_index(bone_idx_vals[1])
+                                    index3 = decode_bone_index(bone_idx_vals[2])
+
                                     weight1 = bone_wght_vals[0]/255.0
                                     weight2 = bone_wght_vals[1]/255.0
                                     weight3 = 1 - weight1 - weight2
 
-                                    bone_arr[index1]['group'].add([vert_idx], weight1, 'ADD')
-                                    bone_arr[index2]['group'].add([vert_idx], weight2, 'ADD')
-                                    bone_arr[index3]['group'].add([vert_idx], weight3, 'ADD')
+                                    # Unused slots still carry a bone id but zero
+                                    # weight; skip them so Blender groups stay clean.
+                                    for bone_idx, weight in ((index1, weight1), (index2, weight2), (index3, weight3)):
+                                        if weight <= 0.0:
+                                            continue
+                                        if bone_idx < len(bone_arr):
+                                            bone_arr[bone_idx]['group'].add([vert_idx], weight, 'ADD')
+                                        else:
+                                            print('   [Import Warning] bone index %d out of range (renderSet lists %d nodes)' % (bone_idx, len(bone_arr)))
 
                         ob.scale = Vector(scale) #Scale
                         ob.rotation_euler = Vector(rotation) #Rotation

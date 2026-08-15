@@ -8,6 +8,25 @@ from ctypes import c_long
 from struct import unpack
 from mathutils import Vector
 
+
+def decode_bone_index(byte):
+    """Decode an iii byte back to the node (vertex group / renderSet node) index.
+
+    The game stores the renderSet-relative node index n (0..N-1) as
+        byte = (3 * n) & 0xFF
+    i.e. 3*n wrapped modulo 256.  Since 3 * 171 = 513 == 1 (mod 256), the
+    inverse is the modular inverse:
+        n = (byte * 171) & 0xFF
+    
+    """
+    return (byte * 171) & 0xFF
+
+
+def encode_bone_index(node):
+    """Inverse of decode_bone_index: node index (0..255) -> stored iii byte."""
+    return (node * 3) & 0xFF
+
+
 #####################################################################
 # Unpack normal from 4-byte int
 def UnpackNormal(packed):
@@ -63,18 +82,46 @@ class LoadDataMesh:
     def __load_packed_section(self):
         self.__pfile.seek(-4, 2) #Go to 4th to last byte
         table_len = unpack('<l', self.__pfile.read(4))[0] #Length of the table
-        self.__pfile.seek(-4-table_len, 2) #Go to the beginning of the table section
-        position = 4 #Current byte position in file
-        self.__PackedGroups = {} #Dictionary(name: dictionary('position':position, 'length': length))
+        table_start = self.__pfile.tell() - 4 - table_len
+        self.__pfile.seek(table_start) #Go to the beginning of the table section
+
+        # Read the whole table first: (section_byte_size, section_name) pairs.
+        entries = []
         while True:
-            data = self.__pfile.read(4) #byte size of the section
+            data = self.__pfile.read(4)
+            if data is None or len(data) != 4:
+                break
             section_byte_size = unpack('<I', data)[0] #Interpret section byte size
-            self.__pfile.read(16) #Skip 16 bytes of buffer?
-            data = self.__pfile.read(4) #Read byte size of the name e.g. 26 bytes for MidBack_wireShape.vertices
-            if data == None or len(data) != 4:
+            self.__pfile.read(16) #Skip 16 bytes of buffer
+            data = self.__pfile.read(4) #Read byte size of the name
+            if data is None or len(data) != 4:
                 break
             section_name_length = unpack('<I', data)[0] #Interpret section name byte size
-            section_name = self.__pfile.read(section_name_length).decode('utf-8') #Name of section e.g MidBack_wireShape.vertices
+            section_name = self.__pfile.read(section_name_length).decode('utf-8') #Name of section
+            if section_name_length % 4 > 0: #Skip table position to next multiple of 4
+                self.__pfile.read(4 - section_name_length % 4)
+            entries.append((section_byte_size, section_name))
+
+        # Some files pad each section to a 4-byte boundary, others do not
+        # (e.g. JM6031_ARP2024_Iona.primitives stores unpadded sizes with the
+        # sections packed tightly).  Decide by walking from byte 4 and checking
+        # which rule lands exactly on the start of the name table.
+        def walk(padded):
+            pos = 4
+            for size, _name in entries:
+                pos += size
+                if padded:
+                    pos += (4 - size % 4) % 4
+            return pos
+
+        use_pad = walk(True) == table_start
+        if not use_pad and walk(False) != table_start:
+            print('   [Import Warning] section walk does not match the name table; using packed (unpadded) layout')
+            use_pad = False
+
+        position = 4 #Current byte position in file
+        self.__PackedGroups = {} #Dictionary(name: dictionary('position':position, 'length': length))
+        for section_byte_size, section_name in entries:
             for item in ('vertices', 'indices'): #If the section is a vertices or indices section, add to __PackedGroups
                 #TODO:
                 #'armor' data
@@ -88,10 +135,8 @@ class LoadDataMesh:
                 print(position)
                 print(section_byte_size)
             position += section_byte_size #Move position up to start of next section
-            if section_byte_size%4 > 0: #Skip section bytes to next multiple of 4
-                position += 4-section_byte_size%4
-            if section_name_length%4 > 0: #Skip table position to next multiple of 4
-                self.__pfile.read(4-section_name_length%4)
+            if use_pad and section_byte_size % 4 > 0: #Skip section bytes to next multiple of 4
+                position += 4 - section_byte_size % 4
             
     def __load_XYZNUV(self, iposition, vposition):
         if self.__debug: #Print divider

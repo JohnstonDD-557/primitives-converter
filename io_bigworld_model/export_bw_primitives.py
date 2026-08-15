@@ -14,6 +14,7 @@ import bpy
 from mathutils import Vector
 from .visualfix_mk3 import visual_fix
 from .rotation import xzy2matrix
+from .loaddatamesh import encode_bone_index
 
 #####################################################################
 # packNormal
@@ -166,7 +167,7 @@ class BigWorldModelExporter(object):
                         XYZNUVTB = (x, z, y, n, u, 1-v)
                         TB = (t, bn)
                         if len(vert.groups) == 1:
-                            index1 = (vert.groups[0].group*3) & 0xFF
+                            index1 = encode_bone_index(vert.groups[0].group)
                             index2 = 0
                             index3 = 0
 
@@ -183,8 +184,8 @@ class BigWorldModelExporter(object):
                             weight2 = int(weight2*255)
 
                         elif len(vert.groups) == 2:
-                            index1 = (vert.groups[0].group*3) & 0xFF
-                            index2 = (vert.groups[1].group*3) & 0xFF
+                            index1 = encode_bone_index(vert.groups[0].group)
+                            index2 = encode_bone_index(vert.groups[1].group)
                             index3 = 0
 
                             weight1 = vert.groups[0].weight
@@ -200,9 +201,9 @@ class BigWorldModelExporter(object):
                             weight2 = int(weight2*255)
 
                         elif len(vert.groups) == 3:
-                            index1 = (vert.groups[0].group * 3) & 0xFF
-                            index2 = (vert.groups[1].group * 3) & 0xFF
-                            index3 = (vert.groups[2].group * 3) & 0xFF
+                            index1 = encode_bone_index(vert.groups[0].group)
+                            index2 = encode_bone_index(vert.groups[1].group)
+                            index3 = encode_bone_index(vert.groups[2].group)
 
                             weight1 = vert.groups[0].weight
                             weight2 = vert.groups[1].weight
